@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>Sales invoice (Green design)</title>
+        <meta name="author" content="Felix Huang" />
+        <link rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+            integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2"
+            crossorigin="anonymous">
+        <style type="text/css">
+        * { margin:0; padding:0; text-indent:0; }
+        .s1 { color: #535353; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 36pt; }
+        .p, p { color: #535353; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 8pt; margin:0pt; }
+        .s2 { color: #535353; font-family:"Times New Roman", serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 8pt; }
+        .s3 { color: black; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; vertical-align: 1pt; }
+        .s4 { color: black; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; }
+        .s5 { color: black; font-family:"Times New Roman", serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; }
+        .s6 { color: black; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; vertical-align: -1pt; }
+        .s7 { color: black; font-family:"Times New Roman", serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; vertical-align: -1pt; }
+        .s8 { color: #535353; font-family:"Microsoft Sans Serif", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 8pt; }
+        .s9 { color: #535353; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 11pt; }
+        .s10 { color: #535353; font-family:"Times New Roman", serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 11pt; }
+        .s11 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 10.5pt; }
+        .s12 { color: #535353; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 10pt; }
+        .s13 { color: #535353; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: bold; text-decoration: none; font-size: 16pt; }
+        .s14 { color: #535353; font-family:"Times New Roman", serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 16pt; }
+        .s15 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 9.5pt; }
+        .s16 { color: black; font-family:Arial, sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 15pt; }
+        .s17 { color: #535353; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 16pt; }
+        .s18 { color: black; font-family:"Lucida Sans", sans-serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; }
+        .s19 { color: black; font-family:"Times New Roman", serif; font-style: normal; font-weight: normal; text-decoration: none; font-size: 6pt; }
+        table, tbody { vertical-align: top; overflow: visible; }
+        .product-table {
+            margin-left: 1%;
+            width: 95%;
+            border-collapse: collapse;
+        }
+        .product-table th, .product-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .product-table th {
+            background-color: #f2f2f2;
+        }
+        @media screen and (max-width: 600px) {
+            .product-table, .product-table thead, .product-table tbody, .product-table th, .product-table td, .product-table tr {
+                display: block;
+            }
+            .product-table th {
+                display: none;
+            }
+            .product-table td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            .product-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+            }
+        }
+    </style>
+    </head>
+    <body>
+        <table width="100%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td align="left" valign="top" bgcolor="#ffe77b"
+                    style="background-color:#fff;">
+                    <img height="100" width="100"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgQ_m4DUpDZtd5CnGPtFUpGMXXEoPWNSVnAA&usqp=CAU"
+                        alt>
+                </td>
+                <td align="left" bgcolor="#ffe77b"
+                    style="background-color: #fff;">
+                    <h2 style="font-weight: 900;color: brown;">AR
+                        Advertiser</h2>
+                    <p>227 Cobblestone Road, 30000 Bedrock, Cobblestone
+                        County<br />http://dinostore.bed | hello@dinostore.bed
+                        +555 7 789-1234</p>
+                </td>
+            </tr>
+        </table>
+        <h1
+            style="font-size: 30px;font-weight: 600; color: green; margin-top: 10px;">INVOICE</h1>
+        <h4>{{invoiceCount}}</h4>
+
+        <table width="95%" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="30%" align="left" valign="top" bgcolor="#ffe77b"
+                    style="background-color:#fff;">
+                    <p
+                        style="font-weight: bold;color: #000000;font-size: medium;">Customer
+                        Id :
+                        <span>{{userId}}</span></p>
+                    <p
+                        style="font-weight: bold; color: #000000;font-size: medium;">Mobile
+                        No :
+                        <span>{{phone}}</span></p>
+
+                </td>
+                <td width="40%" align="left" bgcolor="#ffe77b"
+                    style="background-color: #fff;">
+                </td>
+                <td width="30%" align="right" bgcolor="#ffe77b"
+                    style="background-color: #fff;">
+                    <h4 style="font-weight: 700;color: #000000;">Date:
+                        {{currentDate}}</h4>
+                    <h4 style="font-weight: 700;color: #000000;">INVOICE NO:
+                        {{invoiceNumber}}</h4>
+                </td>
+            </tr>
+        </table>
+        <br><br><br>
+        <table class="product-table">
+            <thead>
+                <tr>
+                    <th>Item Description</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Amount</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each products.prodlist}}
+                <tr>
+                    <td data-label="Item Description">{{this.name}} -
+                        {{this.description}}</td>
+                    <td data-label="Quantity">{{this.quantity}}</td>
+                    <td data-label="Price">{{this.price}}</td>
+                    <td data-label="Amount">{{this.total}}</td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
+        <table class="product-table">
+            <tr style="height:17pt">
+                <td colspan="3" rowspan="3"
+                    style="width:100%; border: 1px solid #ddd;">
+                    <p class="s12"
+                        style="padding-top: 2pt;text-align: right;">Subtotal</p>
+                    <p class="s12"
+                        style="padding-top: 4pt;text-align: right;">Tax</p>
+                    <p class="s13"
+                        style="padding-top: 4pt;text-align: right;">BALANCE
+                        DUE</p>
+                </td>
+                <td>
+                    <p style="text-align: center;">{{products.subtotal}}</p>
+                </td>
+            </tr>
+            <tr style="height:17pt">
+                <td>
+                    <p style="text-align: center;">{{products.tax}}</p>
+                </td>
+            </tr>
+            <tr style="height:24pt">
+                <td>
+                    <p style="text-align: center;">{{products.gtotal}}</p>
+                </td>
+            </tr>
+        </table>
+
+        <!-- QR Code -->
+        <div style="text-align: center; margin-top: 20px;">
+            <h4>Scan for Verification</h4>
+            <p>CIN No : L23434533424</p>
+            <p>GSTIN : NA</p>
+            <img id="qrcode" src alt="QR Code" /><br>
+            <p>* All Offers are Subject to applicable T&C.</p>
+            <p>* No return / Exchange / Refund On</p>
+            <p>*This is computer generated invoice and hence does not require
+                any signature</p>
+        </div>
+
+        <script
+            src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+        <script>
+        // Generate QR code with user ID and other details
+        const userId = 'USER_ID_HERE'; // Replace with actual user ID
+        const invoiceNo = 'DX-5236'; // Replace with actual invoice number
+        const qrData = `User ID: ${userId}\nInvoice No: ${invoiceNo}`;
+
+        QRCode.toDataURL(qrData, { width: 200 }, function (err, url) {
+            if (err) console.error(err);
+            document.getElementById('qrcode').src = url;
+        });
+    </script>
+    </body>
+</html>

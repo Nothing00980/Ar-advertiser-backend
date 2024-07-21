@@ -22,7 +22,10 @@
     "node": "^18.20.1",
     "otp-generator": "^4.0.1",
     "path": "^0.12.7",
+    "pdf-creator-node": "^2.3.5",
     "pdf-lib": "^1.17.1",
-    "twilio": "^5.0.3"
+    "qrcode": "^1.5.3",
+    "twilio": "^5.0.3",
+    "uuid": "^10.0.0"
   }
 }
