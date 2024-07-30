@@ -6,25 +6,23 @@ const cartDetailSchema = new mongoose.Schema({
     ObjectId : {type:mongoose.Schema.Types.ObjectId,ref:'maindata',require:true},
   productName: { type: String, required: true },
   quantity: { type: Number, required: true },
-  price: { type: Number, required: true },
-  calories :{type:String,default:''},
-  protein : {type:String,default:''},
-  sodium : {type:String,default:''},
-  sugar :{type:String,default:''}
+  productPrice: { type: Number, required: true },
+  weight : {type : String,required:true}
+ 
   
 });
 
-const paymentConfirmationSchema = new mongoose.Schema({
-    paymentId: { type: String, required: true }, // Payment ID or token
-    amount: { type: Number, required: true },
-    // Add other payment details as needed
-  });
+// const paymentConfirmationSchema = new mongoose.Schema({
+//     paymentId: { type: String, required: true }, // Payment ID or token
+//     amount: { type: Number, required: true },
+//     // Add other payment details as needed
+//   });
 
 const cartSchema = new mongoose.Schema({
     userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }, // Reference to user
-    phone: {type:Number,ref:'User',required:true},
+    contactInfo: { type: String, required: true },
     items: [cartDetailSchema],
-     paymentConfirmation: paymentConfirmationSchema,  // Array of cart details representing multiple products
+     paymentConfirmation: {type : String,required : true},  // Array of cart details representing multiple products
     createdAt: { type: Date, default: Date.now }, // Timestamp for when the cart was created
   });
 

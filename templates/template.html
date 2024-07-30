@@ -35,6 +35,10 @@
             margin-left: 1%;
             width: 95%;
             border-collapse: collapse;
+            white-space: nowrap;
+        }
+        .product-table p{
+            /* display: inline-block; */
         }
         .product-table th, .product-table td {
             border: 1px solid #ddd;
@@ -99,9 +103,9 @@
                         Id :
                         <span>{{userId}}</span></p>
                     <p
-                        style="font-weight: bold; color: #000000;font-size: medium;">Mobile
-                        No :
-                        <span>{{phone}}</span></p>
+                        style="font-weight: bold; color: #000000;font-size: medium;">ContactInfo
+                        :
+                        <span>{{ContactInfo}}</span></p>
 
                 </td>
                 <td width="40%" align="left" bgcolor="#ffe77b"
@@ -133,14 +137,14 @@
                         {{this.description}}</td>
                     <td data-label="Quantity">{{this.quantity}}</td>
                     <td data-label="Price">{{this.price}}</td>
-                    <td data-label="Amount">{{this.total}}</td>
+                    <td data-label="Amount">Rs {{this.total}}</td>
                 </tr>
                 {{/each}}
             </tbody>
         </table>
         <table class="product-table">
             <tr style="height:17pt">
-                <td colspan="3" rowspan="3"
+                <td colspan="2" rowspan="3"
                     style="width:100%; border: 1px solid #ddd;">
                     <p class="s12"
                         style="padding-top: 2pt;text-align: right;">Subtotal</p>
@@ -151,17 +155,17 @@
                         DUE</p>
                 </td>
                 <td>
-                    <p style="text-align: center;">{{products.subtotal}}</p>
+                    <p style="text-align: center;">Rs {{products.subtotal}}</p>
                 </td>
             </tr>
             <tr style="height:17pt">
                 <td>
-                    <p style="text-align: center;">{{products.tax}}</p>
+                    <p style="text-align: center;">Rs {{products.tax}}</p>
                 </td>
             </tr>
             <tr style="height:24pt">
                 <td>
-                    <p style="text-align: center;">{{products.gtotal}}</p>
+                    <p style="text-align: center;">Rs {{products.gtotal}}</p>
                 </td>
             </tr>
         </table>
@@ -171,7 +175,8 @@
             <h4>Scan for Verification</h4>
             <p>CIN No : L23434533424</p>
             <p>GSTIN : NA</p>
-            <img id="qrcode" src alt="QR Code" /><br>
+            <h2>QR Code</h2>
+            <img src="{{qrCode}}" alt="QR Code">
             <p>* All Offers are Subject to applicable T&C.</p>
             <p>* No return / Exchange / Refund On</p>
             <p>*This is computer generated invoice and hence does not require
@@ -182,14 +187,7 @@
             src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
         <script>
         // Generate QR code with user ID and other details
-        const userId = 'USER_ID_HERE'; // Replace with actual user ID
-        const invoiceNo = 'DX-5236'; // Replace with actual invoice number
-        const qrData = `User ID: ${userId}\nInvoice No: ${invoiceNo}`;
-
-        QRCode.toDataURL(qrData, { width: 200 }, function (err, url) {
-            if (err) console.error(err);
-            document.getElementById('qrcode').src = url;
-        });
+       
     </script>
     </body>
 </html>

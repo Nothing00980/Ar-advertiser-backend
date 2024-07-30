@@ -10,7 +10,9 @@ const path = require('path');
 const dotenv = require('dotenv');
 const otpgenerator = require('otp-generator');
 const cors = require('cors');
-const fs = require('fs').promises;
+// const fs = require('fs').promises;
+const fs = require('fs');
+// const path = require('path');
 
 const { PDFDocument, rgb } = require('pdf-lib');
 
@@ -23,7 +25,7 @@ const accountsid = process.env.ACCOUNT_SID;
 const authToken = process.env.AUTH_TOKEN;
 const twiliophonenumber = process.env.TWILIOPHONENUMBER;
 const client = twilio(accountsid, authToken);
-
+const QRCode = require('qrcode');
 
 // Specify the path to the .env file
 
@@ -33,8 +35,9 @@ const crypto = require('crypto');
 
 const PORT = process.env.PORT || 8000;
 const mongodbstring = process.env.MONGO_URL;
-const secretKey = crypto.randomBytes(32).toString('hex');
 const falsehash = crypto.randomBytes(12).toString('hex');
+const randomnumber = Math.random();
+const secretKey = process.env.SECRETKEY;
 
 
 const storage = multer.diskStorage({
@@ -71,6 +74,8 @@ const User = require('./models/user-data');
 const Maindata = require('./models/maindata');
 const Cart = require('./models/cart-data');
 const { ObjectId } = require('mongodb');
+
+const Userphone = require('./models/user-data-phone');
 
 const otpmap = new Map();
 
@@ -134,13 +139,7 @@ app.post('/auth/user/send-phone', (req, res) => {
   // const phone = '+919522271497';
 
 
-  User.findOne({ phonenumber: phoneNumber })
-    .then(user => {
-      if (user) {
-        return res.status(400).json({ error: 'Phone number already exists' });
 
-      }
-      else {
 
 
 
@@ -161,12 +160,11 @@ app.post('/auth/user/send-phone', (req, res) => {
             console.error('Error sending OTP :', error);
             res.status(500).json({ error: "Failed to send OTP" });
           });
-      }
+      
     });
 
 
 
-});
 
 
 app.post('/resendotp', (req, res) => {
@@ -198,25 +196,39 @@ app.post('/verify-otp', (req, res) => {
   // Check if entered OTP matches the previously generated OTP
   if (enteredOTP === otpmap.get(phoneNumber)) {
     // OTP is correct
-
-    const newUseer = new User({
-      phonenumber: phoneNumber,
-      email: falsehash
-    });
-    newUseer.save()
-      .then(saveduser => {
-        console.log('user created:', saveduser);
-        res.status(200).json({ success: true });
-
+    // Check if the user already exists
+    Userphone.findOne({ phonenumber: phoneNumber })
+      .then(existingUser => {
+        if (existingUser) {
+          console.log("Existing user");
+          // User already exists, generate and send token
+          const token = jwt.sign({ userId: existingUser._id }, secretKey);
+          return res.status(200).json({ success: true, token, userId: existingUser._id });
+        } else {
+          // Create new user
+          const newUser = new Userphone({
+            phonenumber: phoneNumber
+             // Replace falsehash with appropriate email or data
+          });
+          newUser.save()
+            .then(savedUser => {
+              console.log('User created:', savedUser);
+              const token = jwt.sign({ userId: savedUser._id }, secretKey);
+              res.status(200).json({ success: true, token, userId: savedUser._id });
+            })
+            .catch(error => {
+              console.error('Error creating user:', error);
+              res.status(500).json({ error: 'Failed to create user' });
+            });
+        }
       })
       .catch(error => {
-        console.error('Error creating user:', error);
-        res.status(500).json({ error: 'Failed to create user' });
+        console.error('Error finding user:', error);
+        res.status(500).json({ error: 'Failed to find user' });
       });
-
   } else {
     // Incorrect OTP
-    res.status(400).json({ success: false, error: 'Incorrect otp' });
+    res.status(400).json({ success: false, error: 'Incorrect OTP' });
   }
 });
 
@@ -242,8 +254,7 @@ app.post('/auth/user/signup', async (req, res) => {
     const newUser = new User({
       username: username,
       email: email,
-      password: hashedPassword,
-      phone: falsehash
+      password: hashedPassword
     });
 
     // Save the new user to the database
@@ -285,8 +296,7 @@ app.post('/auth/user/login', async (req, res) => {
       // Include additional user details here
       userDetails: {
         username: user.username,
-        email: user.email,
-        phone: user.phonenumber,
+        email: user.email
         // Add more user details as needed
       }
     };
@@ -341,7 +351,7 @@ app.post('/importdata', upload.single('file'), async (req, res) => {
 });
 
 
-app.post('/barcode-fetch', async (req, res) => {
+app.post('/barcode-fetch', authenticateToken,async (req, res) => {
 
   const { barcode } = req.body;
   console.log(barcode);
@@ -371,56 +381,56 @@ app.post('/barcode-fetch', async (req, res) => {
 
 
 
-app.post('/checkout', async (req, res) => {
-  // Extract data from request body
-  const { userId, paymentConfirmation, cartDetails } = req.body;
+// app.post('/checkout', async (req, res) => {
+//   // Extract data from request body
+//   const { userId, paymentConfirmation, cartDetails } = req.body;
 
-  console.log(userId);
-  console.log(paymentConfirmation);
-  console.log(cartDetails);
-
-
+//   console.log(userId);
+//   console.log(paymentConfirmation);
+//   console.log(cartDetails);
 
 
 
 
-  if (!userId || !paymentConfirmation || !cartDetails || !Array.isArray(cartDetails) || cartDetails.length === 0) {
-    return res.status(400).json({ error: 'Invalid request data' });
-  }
-  try {
 
 
-    const user = await User.findById(userId);
-
-    if (!user) {
-      return res.status(404).json({ error: 'User not found' });
-    }
-
-    // Now you have user details, such as email, address, etc., which you can use as needed
-    // const userEmail = user.email;
-    const phone = user.phonenumber;
-    // Create a new cart document
-    const cart = new Cart({
-      userId: userId,
-      phone: phone,
-      paymentConfirmation: paymentConfirmation,
-      items: cartDetails
-    });
-
-    // Save the cart to the database
-    await cart.save();
+//   if (!userId || !paymentConfirmation || !cartDetails || !Array.isArray(cartDetails) || cartDetails.length === 0) {
+//     return res.status(400).json({ error: 'Invalid request data' });
+//   }
+//   try {
 
 
+//     const user = await User.findById(userId);
 
-    // Send success response
-    res.status(200).json({ message: 'Cart saved successfully' });
-  } catch (error) {
-    console.error('Error saving cart:', error);
-    res.status(500).json({ error: 'Failed to save cart' });
-  }
+//     if (!user) {
+//       return res.status(404).json({ error: 'User not found' });
+//     }
+
+//     // Now you have user details, such as email, address, etc., which you can use as needed
+//     // const userEmail = user.email;
+//     const phone = user.phonenumber;
+//     // Create a new cart document
+//     const cart = new Cart({
+//       userId: userId,
+//       phone: phone,
+//       paymentConfirmation: paymentConfirmation,
+//       items: cartDetails
+//     });
+
+//     // Save the cart to the database
+//     await cart.save();
 
 
-});
+
+//     // Send success response
+//     res.status(200).json({ message: 'Cart saved successfully' });
+//   } catch (error) {
+//     console.error('Error saving cart:', error);
+//     res.status(500).json({ error: 'Failed to save cart' });
+//   }
+
+
+// });
 
 
 // const fs = require('fs');
@@ -461,11 +471,13 @@ const getCurrentDate = () => {
 };
 
 
+
+
 // todo generate pdf
 
-const generatePdf = async (cartDetails, userId, paymentConfirmation, phone, res) => {
-  const html = fs.readFileSync(path.join(__dirname, '../templates/template.html'), 'utf-8');
-  const filename = Math.random() + '_doc' + '.pdf';
+const generatePdf = async (cartDetails, userId, paymentConfirmation,contactInfo, callback) => {
+  const html = fs.readFileSync(path.join(__dirname, '/templates/template.html'), 'utf-8');
+  const filename = Math.random().toString(36).substring(2, 15) + '_doc.pdf';
 
 
 
@@ -473,12 +485,10 @@ const generatePdf = async (cartDetails, userId, paymentConfirmation, phone, res)
 
   cartDetails.forEach(d => {
     const prod = {
-      name: d.name,
-      description: d.description,
-      unit: d.unit,
+      name: d.productName,
       quantity: d.quantity,
-      price: d.price,
-      total: d.quantity * d.price
+      price: d.productPrice,
+      total: d.quantity * d.productPrice
     };
     array.push(prod);
   });
@@ -488,13 +498,16 @@ const generatePdf = async (cartDetails, userId, paymentConfirmation, phone, res)
     subtotal += i.total;
   });
   const tax = (subtotal * 20) / 100;
-  const grandtotal = subtotal - tax;
+  const grandtotal = subtotal + tax;
   const obj = {
     prodlist: array,
     subtotal: subtotal,
     tax: tax,
     gtotal: grandtotal
   };
+
+
+  const qrCodeData = await QRCode.toDataURL(userId.toString());
 
   let invoiceCount = getInvoiceCount();
   const document = {
@@ -503,19 +516,20 @@ const generatePdf = async (cartDetails, userId, paymentConfirmation, phone, res)
       products: obj,
       userId: userId,
       paymentConfirmation: paymentConfirmation,
-      phone: phone,
+      contactInfo: contactInfo,
       currentDate: getCurrentDate(),
       invoiceNumber: generateInvoiceNumber(),
-      invoiceCount: ++invoiceCount
+      invoiceCount: ++invoiceCount,
+      qrCode: qrCodeData
     },
-    path: './docs/' + filename
+    path: path.join(__dirname, '/uploads/invoices/', filename)
   };
   const options = {}; // Define any necessary options for pdf-creator-node
 
   pdf.create(document, options)
     .then(result => {
       console.log(result);
-      const filepath = 'http://localhost:3000/docs/' + filename;
+      const filepath = 'http://localhost:3000/uploads/invoices/' + filename;
       callback(null, filepath);
     }).catch(error => {
       console.log(error);
@@ -523,41 +537,47 @@ const generatePdf = async (cartDetails, userId, paymentConfirmation, phone, res)
     });
 };
 
-app.post('/checkout', async (req, res) => {
+app.post('/checkout', authenticateToken,async (req, res) => {
   const { userId, paymentConfirmation, cartDetails } = req.body;
 
   console.log(userId);
   console.log(paymentConfirmation);
   console.log(cartDetails);
 
-  if (!userId || !paymentConfirmation || !cartDetails || !Array.isArray(cartDetails) || cartDetails.length === 0) {
+  if (!userId  || !paymentConfirmation || !cartDetails || !Array.isArray(cartDetails) || cartDetails.length === 0) {
     return res.status(400).json({ error: 'Invalid request data' });
   }
 
   try {
     const user = await User.findById(userId);
+    const userphone = await Userphone.findById(userId);
 
-    if (!user) {
+    if (!user && !userphone) {
       return res.status(404).json({ error: 'User not found' });
     }
 
-    const phone = user.phonenumber;
+    const contactInfo = user ? user.email : userphone.phonenumber;
 
+   
+    console.log(contactInfo ,  "---- ccontaact info");
+    if (!contactInfo) {
+      return res.status(400).json({ error: 'No contact information available for the user' });
+    }
     const cart = new Cart({
       userId: userId,
-      phone: phone,
+      contactInfo: contactInfo,
       paymentConfirmation: paymentConfirmation,
       items: cartDetails
     });
 
     await cart.save();
 
-    generatePdf(cartDetails, userId, paymentConfirmation, phone, (err, filepath) => {
+    generatePdf(cartDetails, userId, paymentConfirmation, contactInfo, (err, filepath) => {
       if (err) {
         console.error('Error generating PDF:', err);
         return res.status(500).json({ error: 'Failed to generate PDF' });
-        res.json({ path: filepath });
       }
+      res.json({ path: filepath });
 
     });
 
